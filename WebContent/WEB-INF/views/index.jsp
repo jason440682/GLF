@@ -8,8 +8,8 @@
 </head>
 <body>
 <h1>hello</h1>
-<form action="owner/test3" method="post">
-name: <input name="name">
+<form action="owner/test3" >    <!-- post/get -->
+name: <input name="myName">
 <button type="submit">确认</button>
 </form>
 

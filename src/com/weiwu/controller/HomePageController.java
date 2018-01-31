@@ -1,4 +1,4 @@
-package com.glf.controller;
+package com.weiwu.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
