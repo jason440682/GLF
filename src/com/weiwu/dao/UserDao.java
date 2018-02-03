@@ -1,8 +1,8 @@
-package com.weiwu.mapper;
+package com.weiwu.dao;
 
 import com.weiwu.entry.User;
 
-public interface  UserMapper {
+public interface  UserDao {
 
 	public User selectUserById(String id);
 }

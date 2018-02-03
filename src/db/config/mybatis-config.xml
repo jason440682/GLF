@@ -16,5 +16,6 @@
   </environments>
   <mappers>
     <mapper resource="db/config/user-mapper.xml"/>
+    <mapper resource="db/config/housing-mapper.xml"/>
   </mappers>
 </configuration>

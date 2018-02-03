@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weiwu.dao.HousingDao">
+
+<select id="getAllHousingEstate" resultMap="HousingEstateMap">
+    select * from housing_estate
+</select>
+
+<select id="getBuildingsByEstate" resultMap="BuildingMap">
+    select * from house_building where housing_estate_id = #{id}
+</select>
+
+<resultMap id="HousingEstateMap" type="com.weiwu.entry.HousingEstate">
+  <id property="housingEstateId" column="housing_estate_id" />
+  <result property="estateName" column="estate_name"/>
+  <result property="address" column="address"/>
+  <result property="street" column="street"/>
+  <result property="division" column="division"/>
+</resultMap>
+
+
+<resultMap id="BuildingMap" type="com.weiwu.entry.Building">
+  <id property="buildingId" column="buildingId" />
+  <result property="housingEstateId" column="housing_estate_id"/>
+  <result property="buildingName" column="building_name"/>
+</resultMap>
+
+</mapper>
