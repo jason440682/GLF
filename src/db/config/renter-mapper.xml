@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weiwu.dao.RenterDao">
+  <select id="getRenterByHouseId" resultType="com.weiwu.entry.Renter">
+    select name,renterId,phone,status,houseId,
+    startDate, endDate
+    from renter r,user  u where houseId = #{houseId}
+    and u.userId = r.renterId
+  </select>
+  
+  <select id="getPayItemByRenterId" resultType="com.weiwu.entry.RenterPayItem">
+  	select renterId, item, is_payfor as isPayFor 
+  	from renter_pay_item r,billing_item b
+  	where r.item_id=b.item_id and renterId = #{renterId}	
+  </select>
+  
+  <select id ="isPayByRenter" resultType="String">
+  	 select isPay from renter_pay_item p, renter r,billing b
+ 	 where  p.renterId = p.renterId and r.houseId = b.houseId
+ 		and p.item_id = b.item_id   and b.startDate = #{0} and r.renterId = #{1}
+  	 	and is_payfor = 'Y' limit 1
+  </select>
+  
+</mapper>

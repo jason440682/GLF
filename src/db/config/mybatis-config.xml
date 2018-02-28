@@ -11,11 +11,17 @@
         <property name="url" value="jdbc:mysql://119.23.17.62:3306/weiwu"/>
         <property name="username" value="root"/>
         <property name="password" value="Liangjia1994!"/>
+        <property name="poolPingEnabled" value="true"/>  
+        <property name="poolPingQuery" value="select 1"/>  
       </dataSource>
     </environment>
   </environments>
   <mappers>
     <mapper resource="db/config/user-mapper.xml"/>
     <mapper resource="db/config/housing-mapper.xml"/>
+    <mapper resource="db/config/renter-mapper.xml"/>
+    <mapper resource="db/config/billing-mapper.xml"/>
+    <mapper resource="db/config/payment-mapper.xml"/>
+    <mapper resource="db/config/system-mapper.xml"/>
   </mappers>
 </configuration>

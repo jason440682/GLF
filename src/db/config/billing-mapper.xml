@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weiwu.dao.BillingDao">
+  <select id="getBillingByHouseId" resultType="com.weiwu.entry.Billing">
+		select houseId,startDate,endDate,item,isPay,amount,billing_id as billingId
+		from billing b,billing_item bt
+		where b.houseId=#{houseId} AND b.item_id = bt.item_id  	
+		AND date_format(b.startDate,'%Y-%m') =  date_format(curdate(),'%Y-%m') 
+  </select>
+</mapper>

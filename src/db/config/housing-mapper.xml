@@ -4,27 +4,210 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weiwu.dao.HousingDao">
 
-<select id="getAllHousingEstate" resultMap="HousingEstateMap">
-    select * from housing_estate
-</select>
+	<select id="getAllHousingEstate" resultMap="HousingEstateMap">
+		select * from housing_estate
+	</select>
 
-<select id="getBuildingsByEstate" resultMap="BuildingMap">
-    select * from house_building where housing_estate_id = #{id}
-</select>
+	<select id="getBuildingsByEstate" resultMap="BuildingMap">
+		select * from house_building where housing_estate_id = #{id}
+	</select>
+	
+	<select id="getLadderByBuilding" resultType="com.weiwu.entry.Ladder">
+		select * from house_ladder where buildingId = #{id}
+	</select>
+	
+	
+	<select id="getRoomByBuilding" resultType="com.weiwu.entry.Room">
+		select * from house_room where buildingId = #{id}
+	</select>
+	
+	<select id="getRoomByLadder" resultType="com.weiwu.entry.Room">
+		select * from house_room where ladderId = #{id}
+	</select>
+	
+	<select id="getHouseFullInfoByUser" resultType="com.weiwu.entry.HouseFullInfo">
+		select ow.houseId,
+			status,
+			roomName,
+			ladderName,
+			building_name as buildingName,
+			estate_name as estateName,
+			street,
+			division
+		from house_owner ow
+		LEFT JOIN house_room rm
+			ON ow.houseId = rm.houseId
+		INNER JOIN house_ladder ld
+			ON rm.ladderId = ld.ladderId
+		LEFT JOIN house_building bd
+			ON ld.buildingId = bd.buildingId
+		LEFT JOIN housing_estate et
+			ON et.housing_estate_id = bd.housing_estate_id
+		where ow.userId = #{userId} 
+		UNION
+		select ow.houseId,
+			status,
+			roomName,
+			'' as ladderName,
+			building_name as buildingName,
+			estate_name as estateName,
+			street,
+			division
+		from house_owner ow
+		LEFT JOIN house_room rm
+			ON ow.houseId = rm.houseId
+		INNER JOIN house_building bd
+			ON rm.buildingId = bd.buildingId
+		LEFT JOIN housing_estate et
+			ON et.housing_estate_id = bd.housing_estate_id
+		where ow.userId = #{userId} 
+	</select>
+	
+	<select id="getHouseBillingByUser" resultType="com.weiwu.entry.HouseFullInfo">
+		select ow.houseId,
+			status,
+			roomName,
+			ladderName,
+			building_name as buildingName,
+			estate_name as estateName,
+			street,
+			division,
+			sum(amount) as amount,
+			case when EXISTS (select 1 from billing b where b.houseId = ow.houseId 
+				AND date_format(b.startDate,'%Y-%m') =  date_format(curdate(),'%Y-%m')  and isPay = 'N') then 'N'
+			else 'Y' end as isPay
+		from billing bl,house_owner ow
+		LEFT JOIN house_room rm
+			ON ow.houseId = rm.houseId
+		INNER JOIN house_ladder ld
+			ON rm.ladderId = ld.ladderId
+		LEFT JOIN house_building bd
+			ON ld.buildingId = bd.buildingId
+		LEFT JOIN housing_estate et
+			ON et.housing_estate_id = bd.housing_estate_id
+		where ow.userId = #{userId} and bl.houseId = ow.houseId
+		   AND date_format(bl.startDate,'%Y-%m') =  date_format(curdate(),'%Y-%m') 
+		UNION
+		select ow.houseId,
+			status,
+			roomName,
+			'' as ladderName,
+			building_name as buildingName,
+			estate_name as estateName,
+			street,
+			division,
+			sum(amount) as amount,
+			case when EXISTS (select 1 from billing b where b.houseId = ow.houseId 
+				AND date_format(b.startDate,'%Y-%m') =  date_format(curdate(),'%Y-%m')  and isPay = 'N') then 'N'
+			else 'Y' end as isPay
+		from billing bl,house_owner ow
+		LEFT JOIN house_room rm
+			ON ow.houseId = rm.houseId
+		INNER JOIN house_building bd
+			ON rm.buildingId = bd.buildingId
+		LEFT JOIN housing_estate et
+			ON et.housing_estate_id = bd.housing_estate_id
+		where ow.userId = #{userId} and bl.houseId = ow.houseId
+			AND date_format(bl.startDate,'%Y-%m') =  date_format(curdate(),'%Y-%m') 
+	</select>
+	
+	<select id="getHouseFullInfoByHouseId" resultType="com.weiwu.entry.HouseFullInfo">
+		select ow.houseId,
+			status,
+			roomName,
+			ladderName,
+			building_name as buildingName,
+			estate_name as estateName,
+			street,
+			division
+		from house_owner ow
+		LEFT JOIN house_room rm
+			ON ow.houseId = rm.houseId
+		INNER JOIN house_ladder ld
+			ON rm.ladderId = ld.ladderId
+		LEFT JOIN house_building bd
+			ON ld.buildingId = bd.buildingId
+		LEFT JOIN housing_estate et
+			ON et.housing_estate_id = bd.housing_estate_id
+		where ow.houseId = #{houseId}
+		UNION
+		select ow.houseId,
+			status,
+			roomName,
+			'' as ladderName,
+			building_name as buildingName,
+			estate_name as estateName,
+			street,
+			division
+		from house_owner ow
+		LEFT JOIN house_room rm
+			ON ow.houseId = rm.houseId
+		INNER JOIN house_building bd
+			ON rm.buildingId = bd.buildingId
+		LEFT JOIN housing_estate et
+			ON et.housing_estate_id = bd.housing_estate_id
+		where ow.houseId = #{houseId}
+	</select>
+	
+	<select id="getRenterFullInfoByUser" resultType="com.weiwu.entry.RenterFull">
+		select renterId,
+			r.status,
+			roomName,
+			ladderName,
+			building_name as buildingName,
+			estate_name as estateName,
+			phone,
+			name as renterName
+		from house_owner ow
+		INNER JOIN renter r 
+			on ow.houseId = r.houseId
+		LEFT JOIN  user u
+			on u.userId = r.renterId
+		LEFT JOIN house_room rm
+			ON ow.houseId = rm.houseId
+		INNER JOIN house_ladder ld
+			ON rm.ladderId = ld.ladderId
+		LEFT JOIN house_building bd
+			ON ld.buildingId = bd.buildingId
+		LEFT JOIN housing_estate et
+			ON et.housing_estate_id = bd.housing_estate_id
+		where ow.userId =  #{userId}
+	UNION
+		select renterId,
+			r.status,
+			roomName,
+			'' as ladderName,
+			building_name as buildingName,
+			estate_name as estateName,
+			phone,
+			name as renterName
+		from house_owner ow
+		INNER JOIN renter r 
+			on ow.houseId = r.houseId
+		LEFT JOIN  user u
+			on u.userId = r.renterId
+		LEFT JOIN house_room rm
+			ON ow.houseId = rm.houseId
+		INNER JOIN house_building bd
+			ON rm.buildingId = bd.buildingId
+		LEFT JOIN housing_estate et
+			ON et.housing_estate_id = bd.housing_estate_id
+		where ow.userId =#{userId}
+	</select>
 
-<resultMap id="HousingEstateMap" type="com.weiwu.entry.HousingEstate">
-  <id property="housingEstateId" column="housing_estate_id" />
-  <result property="estateName" column="estate_name"/>
-  <result property="address" column="address"/>
-  <result property="street" column="street"/>
-  <result property="division" column="division"/>
-</resultMap>
+	<resultMap id="HousingEstateMap" type="com.weiwu.entry.HousingEstate">
+		<id property="housingEstateId" column="housing_estate_id" />
+		<result property="estateName" column="estate_name" />
+		<result property="address" column="address" />
+		<result property="street" column="street" />
+		<result property="division" column="division" />
+	</resultMap>
 
 
-<resultMap id="BuildingMap" type="com.weiwu.entry.Building">
-  <id property="buildingId" column="buildingId" />
-  <result property="housingEstateId" column="housing_estate_id"/>
-  <result property="buildingName" column="building_name"/>
-</resultMap>
+	<resultMap id="BuildingMap" type="com.weiwu.entry.Building">
+		<id property="buildingId" column="buildingId" />
+		<result property="housingEstateId" column="housing_estate_id" />
+		<result property="buildingName" column="building_name" />
+	</resultMap>
 
 </mapper>

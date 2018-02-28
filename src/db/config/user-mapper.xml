@@ -6,4 +6,8 @@
   <select id="selectUserById" resultType="com.weiwu.entry.User">
     select * from user where userId = #{userId}
   </select>
+  
+  <select id="getUserByWeiXin" resultType="com.weiwu.entry.User">
+    select * from user where weixin = #{openId}
+  </select>
 </mapper>

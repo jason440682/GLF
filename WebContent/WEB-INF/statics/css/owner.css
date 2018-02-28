@@ -2,10 +2,9 @@ body, html {
   height: 100%;
   -webkit-tap-highlight-color: transparent;
 }
-.demos-title {
+.advert-title {
   text-align: center;
   font-size: 34px;
-  color: white;
   font-weight: 400;
   margin: 0 15%;
 }
@@ -16,9 +15,18 @@ body, html {
   font-size: 14px;
 }
 
-.demos-header {
-  padding: 30px 0;
-  background-color:#3cc51f;
+.advert {
+  padding: 20px 0;
+  background-color:	#EDEDED;
+}
+
+.am-header am-header-default{
+	 background-color:#3cc51f;
+}
+
+.header-icon{
+	height: 50px ;
+	width : 50px ;
 }
 
 .demos-content-padded {
@@ -50,6 +58,16 @@ footer {
   text-align: center;
   font-size: 14px;
   padding: 20px;
+}
+
+.buttom-icon{
+	padding-top:20px;
+	text-align: center;
+}
+
+.add-button{
+	height: 50px ;
+	width : 50px ;
 }
 
 footer a {
