@@ -59,7 +59,17 @@ $("#ladder").on("change", function() {
 
 $("#vcodeBtn").on("click", function() {	
 	var time = 60;  //倒计时60秒 
-    var timer = setInterval(fun1, 1000);  //设置定时器 
+    
+    var phoneNum = $("#phone").val();
+    var id = $("#room").val();
+	$.get("vcode", { houseId: id , phone: phoneNum}, function(data){
+		if(data =='Phone not match'){
+			alert("与业主预留号码不相同")
+		}else{
+			 var timer = setInterval(fun1, 1000);  //设置定时器
+		}
+	})	    
+	
     function fun1() { 
       time--; 
       if(time>=0) { 
